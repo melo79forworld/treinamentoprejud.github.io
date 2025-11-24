@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treinamento: Pré-Judicialização (Saúde)</title>
+    <style>
+        :root {
+            --pipefy-blue: #0b66e4;
+            --pipefy-dark: #172b4d;
+            --pipefy-bg: #f4f5f7;
+            --card-bg: #ffffff;
+            --success: #36b37e;
+            --warning: #ffab00;
+            --danger: #ff5630;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--pipefy-bg);
+            color: var(--pipefy-dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--pipefy-blue);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 { margin: 0; font-size: 24px; }
+        header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
+
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 300px 1fr; /* Menu Lateral e Conteúdo */
+            gap: 20px;
+        }
+
+        /* Menu de Fases (Estilo Kanban Vertical) */
+        .phase-nav {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .phase-nav h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6b778c;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ebecf0;
+            padding-bottom: 5px;
+        }
+
+        .phase-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            background: #ebecf0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: var(--pipefy-dark);
+            font-size: 13px;
+            border-left: 4px solid transparent;
+        }
+
+        .phase-btn:hover { background: #dfe1e6; }
+        .phase-btn.active {
+            background: #deebff;
+            color: var(--pipefy-blue);
+            border-left: 4px solid var(--pipefy-blue);
+        }
+
+        /* Área de Conteúdo */
+        .content-area {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ebecf0;
+            padding-bottom: 15px;
+        }
+
+        .sla-badge {
+            background: #fffae6;
+            color: #172b4d;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #ffe380;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #5e6c84;
+            text-transform: uppercase;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .task-list li { margin-bottom: 8px; }
+
+        .automation-box {
+            background: #e3fcef;
+            border: 1px solid #abf5d1;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #006644;
+        }
+
+        .warning-box {
+            background: #fffae6;
+            border: 1px solid #ffe380;
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #172b4d;
+            margin-top: 15px;
+        }
+
+        /* Quiz/Simulador */
+        .quiz-section {
+            margin-top: 40px;
+            border-top: 2px dashed #ebecf0;
+            padding-top: 20px;
+        }
+
+        .scenario-card {
+            background: #f4f5f7;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .scenario-options button {
+            margin-right: 10px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .feedback.correct { background: #e3fcef; color: #006644; }
+        .feedback.wrong { background: #ffebe6; color: #bf2600; }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .phase-nav { display: flex; overflow-x: auto; gap: 10px; padding: 10px; }
+            .phase-btn { min-width: 150px; margin-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎓 Manual Interativo: Pré-Judicialização (Saúde)</h1>
+    <p>Fluxo de Trabalho • Regras de Negócio • Automações Pipefy</p>
+</header>
+
+<div class="container">
+    <!-- Navegação das Fases (Kanban simulado) -->
+    <nav class="phase-nav">
+        <h3>Fases do Processo</h3>
+        <button class="phase-btn active" onclick="loadPhase('start')">🟢 Start / Entrada</button>
+        <button class="phase-btn" onclick="loadPhase('validacao')">🔍 Validação de Dados</button>
+        <button class="phase-btn" onclick="loadPhase('orcamento')">💰 Geração de Orçamento</button>
+        <button class="phase-btn" onclick="loadPhase('pendencia_doc')">⚠️ Pendência Documental</button>
+        <button class="phase-btn" onclick="loadPhase('contato')">📞 Contato com Cliente</button>
+        <button class="phase-btn" onclick="loadPhase('assinatura')">✍️ Assinatura (Form)</button>
+        <button class="phase-btn" onclick="loadPhase('validacao_ass')">⚖️ Validação Assinatura</button>
+        <button class="phase-btn" onclick="loadPhase('elaboracao')">📝 Elaboração da Inicial</button>
+        <button class="phase-btn" onclick="loadPhase('aprovacao')">✅ Aprovação da Inicial</button>
+        <button class="phase-btn" onclick="loadPhase('distribuicao')">🏛️ Distribuição</button>
+    </nav>
+
+    <!-- Área de Conteúdo Dinâmico -->
+    <main class="content-area" id="main-content">
+        <!-- O conteúdo será injetado aqui via JavaScript -->
+    </main>
+</div>
+
+<script>
+    // Banco de Dados do Conteúdo (Baseado no Fluxograma e Imagens)
+    const phasesData = {
+        'start': {
+            title: "Start / Entrada de Demandas",
+            sla: "N/A",
+            description: "Ponto de partida do fluxo. Geralmente alimentado via Formulário Público ou integração.",
+            tasks: [
+                "Recebimento dos documentos iniciais do cliente.",
+                "Criação automática do Card no Pipefy.",
+                "Anexar documentos nos campos respectivos (RG, Laudo, Negativa)."
+            ],
+            automation: "🤖 <strong>Automação:</strong> Ao criar o card, o sistema notifica a equipe e move para 'Validação de Dados'.",
+            tips: "Garanta que os arquivos estão legíveis antes de prosseguir. Documentos ruins atrasam todo o processo."
+        },
+        'validacao': {
+            title: "Validação de Dados e Documentos",
+            sla: "🕒 2 dias",
+            description: "Triagem inicial. O analista deve conferir se temos tudo para processar o caso.",
+            tasks: [
+                "Elaborar Procuração, Contrato e Declaração (sem assinatura).",
+                "Conferir Checklist Automático de Documentos.",
+                "Validar: Documento pessoal, carteirinha do plano, laudo médico atualizado.",
+                "<strong>Decisão:</strong> Se houver pendência -> Mover para 'Pendência Documental'. Se OK -> Seguir fluxo."
+            ],
+            automation: "⚠️ Se você marcar 'Possui Pendência? = Sim', o card deve ser movido para a fase de pendências para tratar com o cliente.",
+            tips: "Verifique a data do Laudo Médico. Laudos muito antigos podem ser rejeitados pelo juiz na liminar."
+        },
+        'orcamento': {
+            title: "Geração de Orçamento",
+            sla: "🕒 1 dia",
+            description: "Fase necessária quando a demanda envolve custos prévios não cobertos ou reembolso específico.",
+            tasks: [
+                "Verificar se o medicamento/procedimento requer cotação.",
+                "Solicitar orçamento se não houver tabela pré-fixada.",
+                "Anexar valores ao card."
+            ],
+            automation: "Se não houver necessidade de orçamento (campo 'Medicamento?' = Não), o card pode pular esta etapa.",
+            tips: "Atenção: Ações de alto valor podem requerer aprovação de sócio antes de prosseguir."
+        },
+        'pendencia_doc': {
+            title: "Pendência Documental (Status de Espera)",
+            sla: "🛑 Pausado (Cobrança Ativa)",
+            description: "Fase de 'estacionamento' enquanto aguardamos o cliente enviar o que falta.",
+            tasks: [
+                "Entrar em contato com cliente solicitando o documento faltante.",
+                "Registrar tentativas de contato nos comentários.",
+                "Anexar o documento assim que recebido."
+            ],
+            automation: "🤖 <strong>Automação:</strong> O sistema pode enviar lembretes automáticos por e-mail para o cliente cobrando o documento.",
+            tips: "Não deixe cards acumularem aqui. Se o cliente não responder em 15 dias, avalie o encerramento por inércia."
+        },
+        'contato': {
+            title: "Contato com Cliente",
+            sla: "🕒 2 dias",
+            description: "Momento de acolhimento e explicação do processo judicial.",
+            tasks: [
+                "Realizar 1º contato (fone/WhatsApp).",
+                "Conhecer o paciente e a situação familiar (empalizar).",
+                "Explicar como funcionará a ação (liminar vs mérito).",
+                "Confirmar dados de contato e endereço."
+            ],
+            automation: "Ao finalizar o contato, preencha o resumo da conversa para liberar a fase de Assinatura.",
+            tips: "Este é o momento de alinhar expectativas. Deixe claro que a liminar não é garantida, mas faremos o melhor."
+        },
+        'assinatura': {
+            title: "Assinatura de Procuração e Contrato",
+            sla: "🕒 Variável (Depende do Cliente)",
+            description: "Fase externa. O cliente recebe um link para assinar digitalmente ou enviar os papéis assinados.",
+            tasks: [
+                "O Pipefy envia um e-mail automático com o link do Formulário Público para o cliente.",
+                "O cliente preenche e anexa os documentos assinados.",
+                "Aguardar retorno."
+            ],
+            automation: "🤖 <strong>Automação Crítica:</strong> Quando o cliente preenche o formulário enviado por e-mail, o card move <strong>automaticamente</strong> para 'Validação Assinatura'.",
+            tips: "Se o cliente demorar, reenvie o link do formulário através do botão de email dentro do card."
+        },
+        'validacao_ass': {
+            title: "Validação Assinatura e Pendências",
+            sla: "🕒 1 dia (sem pendência)",
+            description: "Conferência final antes de passar para a equipe jurídica técnica.",
+            tasks: [
+                "Baixar os anexos enviados pelo cliente.",
+                "Conferir se a assinatura confere com o documento pessoal.",
+                "Verificar se todas as páginas estão legíveis.",
+                "<strong>Decisão:</strong> Se erro -> Voltar para 'Pendências'. Se OK -> Mover para 'Elaboração'."
+            ],
+            automation: "Nenhuma automação move o card sozinha aqui. A validação é 100% humana.",
+            tips: "Cuidado com procurações sem data ou sem local. Isso gera emenda à inicial pelo juiz."
+        },
+        'elaboracao': {
+            title: "Elaboração da Peça Inicial",
+            sla: "🕒 4 dias",
+            description: "Fase técnica jurídica. Redação da petição.",
+            tasks: [
+                "Preparação dos Fatos e Endereçamento.",
+                "Capítulos: Justiça Gratuita, Prioridade, Doença, Tratamento, Negativa.",
+                "Fundamentação Jurídica (Lei 9656/98, Jurisprudência, CDC).",
+                "Pedidos (Liminar + Mérito)."
+            ],
+            automation: "Ao terminar, anexe a minuta (Word/PDF) no card e mova para 'Aprovação'.",
+            tips: "Utilize os modelos padrão do escritório, mas personalize a narrativa fática. Juiz não gosta de 'copia e cola' genérico."
+        },
+        'aprovacao': {
+            title: "Aprovação da Peça Inicial",
+            sla: "🕒 1 dia",
+            description: "Controle de qualidade realizado por advogado sênior/coordenador.",
+            tasks: [
+                "Revisar tese jurídica e pedidos.",
+                "Conferir qualificação das partes.",
+                "<strong>Ação:</strong> Aprovar (Mover para Distribuição) ou Reprovar (Mover para Correção)."
+            ],
+            automation: "🤖 <strong>Bot:</strong> Se movido para 'Correção', o advogado redator é notificado. Se aprovado, segue para protocolo.",
+            tips: "Erros comuns: Valor da causa errado e esquecer pedido de tutela de urgência."
+        },
+        'distribuicao': {
+            title: "Distribuição (Protocolo)",
+            sla: "🕒 1 dia",
+            description: "Ajuizamento da ação no sistema do Tribunal (PJe/E-saj).",
+            tasks: [
+                "Acessar sistema do Tribunal competente.",
+                "Cadastrar partes, assunto e classe judicial.",
+                "Protocolar a inicial e documentos.",
+                "<strong>No Pipefy:</strong> Informar Número do Processo, Vara e Link do Tribunal."
+            ],
+            automation: "O preenchimento do campo 'Número do Processo' é obrigatório para sair dessa fase.",
+            tips: "Anexe o comprovante de distribuição no card imediatamente."
+        }
+    };
+
+    // Função para carregar o conteúdo da fase
+    function loadPhase(phaseKey) {
+        const data = phasesData[phaseKey];
+        const container = document.getElementById('main-content');
+
+        // Atualiza botões
+        document.querySelectorAll('.phase-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        // HTML do Conteúdo
+        container.innerHTML = `
+            <div class="phase-header">
+                <h2>${data.title}</h2>
+                <span class="sla-badge">${data.sla}</span>
+            </div>
+
+            <p>${data.description}</p>
+
+            <div class="section-title">👤 Atividades (O que fazer?)</div>
+            <ul class="task-list">
+                ${data.tasks.map(task => `<li>${task}</li>`).join('')}
+            </ul>
+
+            <div class="section-title">⚙️ Regras do Sistema</div>
+            <div class="automation-box">${data.automation}</div>
+
+            <div class="warning-box">
+                <strong>💡 Dica de Ouro:</strong> ${data.tips}
+            </div>
+
+            <!-- Quiz Simulado para esta fase (Genérico) -->
+            <div class="quiz-section">
+                <h3>🧠 Teste Rápido: O que faria você?</h3>
+                <div class="scenario-card">
+                    <p><strong>Cenário:</strong> Você está nesta fase e percebe que falta um documento essencial que impede o progresso.</p>
+                    <div class="scenario-options">
+                        <button onclick="checkAnswer(this, 'correct')">Mover para 'Pendências' e avisar cliente</button>
+                        <button onclick="checkAnswer(this, 'wrong')">Seguir fluxo e torcer para o juiz não ver</button>
+                        <button onclick="checkAnswer(this, 'wrong')">Deixar o card parado aqui até o cliente mandar</button>
+                    </div>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Lógica do Quiz
+    window.checkAnswer = function(btn, type) {
+        const feedbackDiv = btn.parentElement.nextElementSibling;
+        if (type === 'correct') {
+            feedbackDiv.textContent = "✅ Correto! Nunca avance um card com pendências impeditivas. Isso trava a automação e gera retrabalho.";
+            feedbackDiv.className = "feedback correct";
+            feedbackDiv.style.display = "block";
+        } else {
+            feedbackDiv.textContent = "❌ Errado. Isso viola o SLA ou coloca o processo em risco. Mova para a fase de pendência correta.";
+            feedbackDiv.className = "feedback wrong";
+            feedbackDiv.style.display = "block";
+        }
+    }
+
+    // Carregar a primeira fase ao abrir
+    document.addEventListener("DOMContentLoaded", () => {
+        // Simula clique no primeiro botão para carregar
+        document.querySelector('.phase-btn').click();
+    });
+</script>
+
+</body>
+</html>
